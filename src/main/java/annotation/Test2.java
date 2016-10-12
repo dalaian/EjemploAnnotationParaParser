@@ -11,6 +11,8 @@ import org.reflections.scanners.MethodAnnotationsScanner;
 import org.reflections.scanners.SubTypesScanner;
 import org.reflections.scanners.TypeAnnotationsScanner;
 
+import com.google.common.collect.SetMultimap;
+
 import data.Class20;
 
 public class Test2 {
@@ -45,6 +47,11 @@ public class Test2 {
 		List<Method> method = contenedor.get(key.toLowerCase().hashCode());
 		System.out.println("hash");
 		System.out.println(method.get(0).getName());
+	}
+	
+	public void run()
+	{
+		SetMultimap<String, Method> asd;
 	}
 
 }
