@@ -1,9 +1,9 @@
 package annotation;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.reflections.Reflections;
@@ -11,16 +11,16 @@ import org.reflections.scanners.MethodAnnotationsScanner;
 import org.reflections.scanners.SubTypesScanner;
 import org.reflections.scanners.TypeAnnotationsScanner;
 
-import com.google.common.collect.SetMultimap;
+import estructuras.ClasesVisibles;
+import estructuras.MetodosVisibles;
 
-import data.Class20;
 
 public class Test2 {
-
+	static Reflections reflections = new Reflections("data", new MethodAnnotationsScanner(), new TypeAnnotationsScanner(), new SubTypesScanner(false));
 	public static void main(String[] args)
 	{
-		Reflections reflections = new Reflections("data", new MethodAnnotationsScanner(), new TypeAnnotationsScanner(), new SubTypesScanner());
-
+		
+		/*
 		Set<Method> allMethods = reflections.getMethodsAnnotatedWith(MetodoVisiblePorParser.class);
 		
 		Hashtable<Integer,List<Method>> contenedor = new Hashtable<Integer,List<Method>>();
@@ -47,11 +47,28 @@ public class Test2 {
 		List<Method> method = contenedor.get(key.toLowerCase().hashCode());
 		System.out.println("hash");
 		System.out.println(method.get(0).getName());
+		*/
+		
+		run();
 	}
 	
-	public void run()
+	public static void run()
 	{
-		SetMultimap<String, Method> asd;
+		System.out.println();
+		ClasesVisibles clases = new ClasesVisibles();
+		MetodosVisibles metodos = new MetodosVisibles();
+		
+		List<Class<?>> classesVisibles = clases.cargarClases(reflections); 
+		Set<Method> metodosVisibles = metodos.cargarMetodos(reflections);
+		
+		Map<String, Method> parOrdenadoDeClasesMetodosVisibles = new HashMap<String, Method>();
+		for (Method method : metodosVisibles) 
+		{
+			parOrdenadoDeClasesMetodosVisibles.put(Integer.toString(classesVisibles.indexOf(method.getDeclaringClass())) + method.getName(), method);
+		}
+		
+		System.out.println(parOrdenadoDeClasesMetodosVisibles.get("21join3"));
+		System.out.println(System.currentTimeMillis());
 	}
 
 }
