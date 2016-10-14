@@ -11,16 +11,9 @@ import annotation.MetodoVisiblePorParser;
 public class MetodosVisibles extends Diccionario
 {
 
-	@Override
-	public List<Class<?>> cargarClases(Reflections reflection) 
+	public Set<Method> cargarMetodos() 
 	{
-		return null;
-	}
-
-	@Override
-	public Set<Method> cargarMetodos(Reflections reflection) 
-	{
-		return reflection.getMethodsAnnotatedWith(MetodoVisiblePorParser.class);	
+		return super.reflections.getMethodsAnnotatedWith(MetodoVisiblePorParser.class);	
 	}
 
 }
