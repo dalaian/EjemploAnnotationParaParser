@@ -3,53 +3,48 @@ package estructuras;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.reflections.Reflections;
-
 public class DiccionarioDeClases extends Diccionario
 {
-	private MetodosVisibles metodos = new MetodosVisibles();
-	private List<Class<?>> classesVisibles;
+	private MetodosVisibles metodos;
+	private List<Class<?>> clasesVisibles = new ArrayList<Class<?>>();
+	private Map<String, Set<Method>> parOrdenadoDeClasesMetodosVisibles = new HashMap<String, Set<Method>>();
+	
 	public DiccionarioDeClases()
 	{
-		metodos.cargarMetodos();
+		metodos = new MetodosVisibles();
 		asociarMetodosConClases();
-	}
-
-	private List<Class<?>> cargarClases() 
-	{
-		//TODO Si la clase no esta agregarla en la lista de clases visibles.
-		//Class claseDelMetodo = method.getDeclaringClass();
-		List<Class <?>> arregloDeClases = new ArrayList<Class<?>>();
-		
-		for(String nombreDeClase : super.reflections.getAllTypes())
-		{
-			try 
-			{
-				arregloDeClases.add(Class.forName(nombreDeClase));
-			} 
-			catch (ClassNotFoundException e) 
-			{
-				e.printStackTrace();
-			}
-		}
-		return arregloDeClases;
 	}
 	
 	private void asociarMetodosConClases()
 	{
-		Set<Method> metodosVisibles = metodos.cargarMetodos();		
-		Map<String, Method> parOrdenadoDeClasesMetodosVisibles = new HashMap<String, Method>();
-		for (Method method : metodosVisibles) 
+		Set<Method> metodosVisibles = metodos.cargarMetodos();
+		
+		for (Method metodo : metodosVisibles) 
 		{
+			Class<?> claseDelMetodo = metodo.getDeclaringClass();
+			if( !clasesVisibles.contains(claseDelMetodo) )
+			{
+				clasesVisibles.add(claseDelMetodo);
+			}
 			
-			parOrdenadoDeClasesMetodosVisibles.put(Integer.toString(classesVisibles.indexOf(method.getDeclaringClass())) + method.getName(), method);
+			String llaveDelMetodo = Integer.toString(clasesVisibles.indexOf(claseDelMetodo)) + metodo.getName();
+			if( parOrdenadoDeClasesMetodosVisibles.get(llaveDelMetodo) == null )
+			{
+				Set<Method> metodosDeUnParOrdenado = new HashSet<Method>();
+				parOrdenadoDeClasesMetodosVisibles.put( llaveDelMetodo, metodosDeUnParOrdenado);
+			}
+			parOrdenadoDeClasesMetodosVisibles.get(llaveDelMetodo).add(metodo);
 		}
 	}
 
-
+	public Set<Method> obtenerMetodo(Class<?> clase, String nombreMetodo)
+	{
+		return parOrdenadoDeClasesMetodosVisibles.get( Integer.toString(clasesVisibles.indexOf(clase)) + nombreMetodo );
+	}
 
 }
